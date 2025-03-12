@@ -1,31 +1,22 @@
 import mysql.connector
-from mysql.connector import Error
 
-try:
-    # MySQLサーバーに接続
-    connection = mysql.connector.connect(
-        host="localhost",         # ローカルサーバーの場合は 'localhost'
-        user='mshita',            # MySQLのユーザー名
-        password='Tachi_0118'      # パスワード
+
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="mshita",
+        password="Tachi_0118",
+        database="invoice_db"
     )
 
-    if connection.is_connected():
-        print('MySQLサーバーへの接続に成功しました')
 
-        # データベース作成クエリ
-        create_db_query = "CREATE DATABASE invoice_db"
-
-        # カーソルを使用してクエリを実行
-        cursor = connection.cursor()
-        cursor.execute(create_db_query)
-        print("データベース 'invoice_db' を作成しました。")
-
-except Error as e:
-    print(f"エラーが発生しました: {e}")
-
-finally:
-    # リソースを解放
-    if 'connection' in locals() and connection.is_connected():
+def insert_client(name, address):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "INSERT INTO clients (name, address) VALUES (%s, %s)"
+        cursor.execute(query, (name, address))
+        conn.commit()
+    finally:
         cursor.close()
-        connection.close()
-        print("MySQLサーバーとの接続を閉じました")
+        conn.close()
