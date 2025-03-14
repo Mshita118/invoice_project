@@ -20,3 +20,42 @@ def insert_client(name, address):
     finally:
         cursor.close()
         conn.close()
+
+
+def fetch_clients():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "SELECT id, name FROM clients"
+        cursor.execute(query)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def fetch_invoices():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM invoices"
+        cursor.execute(query)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_invoice(client_id, date, subtotal, total):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = """
+        INSERT INTO invoices (client_id, date, subtotal, total)
+        VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(query, (client_id, date, subtotal, total))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
