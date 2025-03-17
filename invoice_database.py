@@ -59,3 +59,34 @@ def insert_invoice(client_id, date, subtotal, total):
     finally:
         cursor.close()
         conn.close()
+
+
+def insert_detail(client_id, building_count, unit_price):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = """
+        INSERT INTO details (client_id, building_count, unit_price)
+        VALUES (%s, %s, %s)
+        """
+        cursor.execute(query, (client_id, building_count, unit_price))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def fetch_details():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = """
+        SELECT details.id, clients.name, details.building_count, details.unit_price, details.total_price, details.created_at
+        FROM details
+        INNER JOIN clients ON details.client_id = clients.id
+        """
+        cursor.execute(query)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
