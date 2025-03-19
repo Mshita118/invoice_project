@@ -90,3 +90,27 @@ def fetch_details():
     finally:
         cursor.close()
         conn.close()
+
+
+def insert_log(action):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "INSERT INTO logs (action) VALUES (%s)"
+        cursor.execute(query, (action,))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def fetch_logs():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "SELECT * FROM logs ORDER BY timestamp DESC"
+        cursor.execute(query)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
